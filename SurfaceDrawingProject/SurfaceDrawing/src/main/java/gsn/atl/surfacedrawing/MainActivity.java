@@ -1,18 +1,18 @@
 package gsn.atl.surfacedrawing;
 
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PixelFormat;
+import android.graphics.Point;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
-import android.view.Menu;
-import android.view.MotionEvent;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
+import android.view.*;
 import android.widget.FrameLayout;
 
 import java.io.IOException;
-import java.security.Security;
 
 public class MainActivity extends Activity implements
         SurfaceHolder.Callback,
@@ -20,6 +20,7 @@ public class MainActivity extends Activity implements
         VideoControllerView.MediaPlayerControl{
 
     SurfaceView videoSurface;
+    SurfaceView closedCaptioningSurface;
     MediaPlayer player;
     VideoControllerView controller;
 
@@ -31,6 +32,39 @@ public class MainActivity extends Activity implements
         videoSurface = (SurfaceView) findViewById(R.id.videoSurface);
         SurfaceHolder videoHolder = videoSurface.getHolder();
         videoHolder.addCallback(this);
+
+        closedCaptioningSurface = (SurfaceView) findViewById(R.id.closedCaptioningSurface);
+        SurfaceHolder closedCaptioningHolder = closedCaptioningSurface.getHolder();
+        if (closedCaptioningHolder != null) {
+            closedCaptioningHolder.setFormat(PixelFormat.TRANSPARENT);
+            closedCaptioningHolder.addCallback(new SurfaceHolder.Callback() {
+                @Override
+                public void surfaceCreated(SurfaceHolder holder) {
+                    drawText(holder);
+                }
+
+                private void drawText(SurfaceHolder holder) {
+                    Point size = new Point();
+                    getWindowManager().getDefaultDisplay().getSize(size);
+                    Canvas canvas = holder.lockCanvas(null);
+                    Paint paint = new Paint();
+                    paint.setColor(0xffffffff);
+                    paint.setTextSize(64);
+                    canvas.drawText("Closed captioning text would go here", size.x * .25f, size.y * .75f, paint);
+                    holder.unlockCanvasAndPost(canvas);
+                }
+
+                @Override
+                public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+
+                }
+
+                @Override
+                public void surfaceDestroyed(SurfaceHolder holder) {
+
+                }
+            });
+        }
 
         player = new MediaPlayer();
         controller = new VideoControllerView(this);
@@ -68,6 +102,8 @@ public class MainActivity extends Activity implements
         player.setDisplay(holder);
         player.prepareAsync();
     }
+
+
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {

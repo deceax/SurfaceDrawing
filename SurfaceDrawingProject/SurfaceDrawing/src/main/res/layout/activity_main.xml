@@ -6,6 +6,11 @@
              tools:context=".MainActivity">
 
     <SurfaceView
+        android:id="@+id/closedCaptioningSurface"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <SurfaceView
         android:id="@+id/videoSurface"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
