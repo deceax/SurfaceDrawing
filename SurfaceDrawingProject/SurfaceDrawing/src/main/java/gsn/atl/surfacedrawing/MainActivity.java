@@ -86,7 +86,6 @@ public class MainActivity extends Activity implements
     protected void onDestroy(){
         super.onDestroy();
         doUnbindService();
-        unregisterReceiver(broadcastReceiver);
     }
 
     @Override
