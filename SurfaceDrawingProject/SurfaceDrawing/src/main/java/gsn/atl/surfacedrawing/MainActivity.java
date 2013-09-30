@@ -45,11 +45,13 @@ public class MainActivity extends Activity implements
                     Point size = new Point();
                     getWindowManager().getDefaultDisplay().getSize(size);
                     Canvas canvas = closedCaptioningHolder.lockCanvas(null);
-                    Paint paint = new Paint();
-                    paint.setColor(0xffffffff);
-                    paint.setTextSize(64);
-                    canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-                    canvas.drawText(text, size.x * .25f, size.y * .75f, paint);
+                    if (canvas != null){
+                        Paint paint = new Paint();
+                        paint.setColor(0xffffffff);
+                        paint.setTextSize(64);
+                        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
+                        canvas.drawText(text, size.x * .25f, size.y * .75f, paint);
+                    }
                     closedCaptioningHolder.unlockCanvasAndPost(canvas);
                 }
             }
@@ -95,7 +97,7 @@ public class MainActivity extends Activity implements
 
         videoSurface = (SurfaceView) findViewById(R.id.videoSurface);
         SurfaceHolder videoHolder = videoSurface.getHolder();
-        videoHolder.addCallback(this);
+        if (videoHolder != null) videoHolder.addCallback(this);
 
         closedCaptioningSurface = (SurfaceView) findViewById(R.id.closedCaptioningSurface);
 
