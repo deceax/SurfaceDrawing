@@ -36,24 +36,8 @@ public class MainActivity extends Activity implements
         public void onReceive(Context context, Intent intent) {
             Bundle bundle = intent.getExtras();
             if (bundle != null){
-                String text = bundle.getString("CC_MESSAGE");
-                SurfaceHolder closedCaptioningHolder = closedCaptioningSurface.getHolder();
-
-                // draw CC text
-                if (closedCaptioningHolder != null) {
-                    closedCaptioningHolder.setFormat(PixelFormat.TRANSPARENT);
-                    Point size = new Point();
-                    getWindowManager().getDefaultDisplay().getSize(size);
-                    Canvas canvas = closedCaptioningHolder.lockCanvas(null);
-                    if (canvas != null){
-                        Paint paint = new Paint();
-                        paint.setColor(0xffffffff);
-                        paint.setTextSize(64);
-                        canvas.drawColor(Color.TRANSPARENT, PorterDuff.Mode.CLEAR);
-                        canvas.drawText(text, size.x * .25f, size.y * .75f, paint);
-                    }
-                    closedCaptioningHolder.unlockCanvasAndPost(canvas);
-                }
+                ClosedCaptioningResource closedCaptioningResource = (ClosedCaptioningResource) bundle.get("CC_MESSAGE");
+                closedCaptioningResource.act();
             }
         }
     };
@@ -100,6 +84,7 @@ public class MainActivity extends Activity implements
         if (videoHolder != null) videoHolder.addCallback(this);
 
         closedCaptioningSurface = (SurfaceView) findViewById(R.id.closedCaptioningSurface);
+        ClosedCaptioningResource.holder = closedCaptioningSurface.getHolder();
 
         player = new MediaPlayer();
         controller = new VideoControllerView(this);
@@ -144,8 +129,6 @@ public class MainActivity extends Activity implements
         player.setDisplay(holder);
         player.prepareAsync();
     }
-
-
 
     @Override
     public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {

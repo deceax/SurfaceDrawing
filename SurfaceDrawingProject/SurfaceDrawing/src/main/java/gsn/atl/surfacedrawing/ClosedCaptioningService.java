@@ -3,6 +3,8 @@ package gsn.atl.surfacedrawing;
 import android.app.Service;
 import android.content.Intent;
 import android.os.Binder;
+import android.os.Bundle;
+import android.os.Environment;
 import android.os.IBinder;
 
 import java.util.Random;
@@ -12,12 +14,11 @@ public class ClosedCaptioningService extends Service {
     public static final String NOTIFICATION = "gsn.atl.surfacedrawing.cc";
 
     private static final String[] messagePool = {
-            "Closed captioning is fun times for all",
+            "Closed captioning test message",
             "I don't know what text to put here",
-            "The quick fox jumped over the lazy dog or something",
-            "All your Closed Captioning are belong to us",
-            "What is man? A miserable pile of secrets!",
-            "I wish I was playing disc golf right now"
+            "The quick fox jumped over the lazy dog",
+            "Sideloading Closed Captioning",
+            "Surface drawing example text"
     };
 
     public class ClosedCaptioningBinder extends Binder {
@@ -28,7 +29,6 @@ public class ClosedCaptioningService extends Service {
 
     @Override
     public void onCreate(){
-        // start closed captioning runnable
         ccThread.start();
     }
 
@@ -50,12 +50,14 @@ public class ClosedCaptioningService extends Service {
     private final IBinder binder = new ClosedCaptioningBinder();
 
     private void sendCC(String text){
+        ClosedCaptioningResource closedCaptioningResource =
+                new ClosedCaptioningResource(200, 200, text, ClosedCaptioningResource.SHOW);
         Intent intent = new Intent(NOTIFICATION);
-        intent.putExtra("CC_MESSAGE", text);
+        intent.putExtra("CC_MESSAGE", closedCaptioningResource);
         sendBroadcast(intent);
     }
 
-    // this thread runs forever and posts random byte closed captioning messages every 5 seconds
+    // this thread runs forever and posts random closed captioning messages every 5 seconds
     private Thread ccThread = new Thread(){
         @Override
         public void run() {
